@@ -28,7 +28,7 @@ Nếu chưa có file `.env`, hãy copy từ `.env.example`:
   ```
 > *Lưu ý: File `.env` đã được cấu hình chuẩn cho Docker:*
 > - `APP_PORT=8000` (Web chính)
-> - `DB_CONNECTION=mysql`, `DB_HOST=mysql`, `DB_PORT=3306`, `DB_DATABASE=laravel`
+> - `DB_CONNECTION=mysql`, `DB_HOST=mysql`, `DB_PORT=3306`, `DB_DATABASE=cuahang_thietbidientu`
 > - `DB_USERNAME=sail`, `DB_PASSWORD=password`
 > - `FORWARD_DB_PORT=33066` (Cổng kết nối MySQL từ máy host)
 > - `REDIS_HOST=redis`, `MAIL_HOST=mailpit`
