@@ -131,7 +131,7 @@
                 @endif
 
                 <!-- Group: CÁC MODULE CHUYÊN MÔN -->
-                @if(auth()->user()->hasPermission('manage_products') || auth()->user()->hasPermission('manage_orders') || auth()->user()->hasPermission('view_inventory') || auth()->user()->hasPermission('manage_coupons') || auth()->user()->hasPermission('manage_reviews') || auth()->user()->hasPermission('manage_banners'))
+                @if(auth()->user()->hasPermission('manage_products') || auth()->user()->hasPermission('manage_categories') || auth()->user()->hasPermission('manage_orders') || auth()->user()->hasPermission('view_inventory') || auth()->user()->hasPermission('manage_coupons') || auth()->user()->hasPermission('manage_reviews') || auth()->user()->hasPermission('manage_banners'))
                     <div class="space-y-1">
                         <span class="px-3 text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">NGHIỆP VỤ CỬA HÀNG</span>
 
@@ -169,11 +169,22 @@
                         @endif
 
                         @if(auth()->user()->hasPermission('manage_products'))
-                            <a href="#products" class="admin-nav-link">
+                            <a href="{{ route('admin.products.index') }}" class="admin-nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
                                 <svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                                 </svg>
-                                <span>Sản phẩm &amp; 3D</span>
+                                <span>Quản lý sản phẩm</span>
+                            </a>
+                            <a href="{{ route('admin.specifications.index') }}" class="admin-nav-link {{ request()->routeIs('admin.specifications.*', 'admin.specification-groups.*') ? 'active' : '' }}">
+                                <svg class="w-4 h-4 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16M4 12h10M4 18h16M18 10v4m-2-2h4"/></svg>
+                                <span>Thông số kỹ thuật</span>
+                            </a>
+                        @endif
+
+                        @if(auth()->user()->hasPermission('manage_categories'))
+                            <a href="{{ route('admin.brands.index') }}" class="admin-nav-link {{ request()->routeIs('admin.brands.*') ? 'active' : '' }}">
+                                <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 7h.01M3 3h7l11 11-7 7L3 10V3z"/></svg>
+                                <span>Thương hiệu</span>
                             </a>
                         @endif
 

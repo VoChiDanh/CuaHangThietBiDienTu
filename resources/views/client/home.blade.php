@@ -185,9 +185,30 @@
                         <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 shadow-2xs border border-blue-100/50">
                             <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
                         </div>
-                        <div class="text-xs">
-                            <div class="font-bold text-slate-900">Lựa chọn thông minh hơn</div>
-                            <div class="text-slate-500 text-[11px]">Đã được 12.500+ khách hàng tin chọn</div>
+                    </div>
+                </div>
+
+                <!-- Right visual element with floating AI badge -->
+                <div class="lg:col-span-5 relative">
+                    <div class="relative mx-auto max-w-md">
+                        <div class="rounded-2xl overflow-hidden bg-white/60 p-4 border border-white/80 shadow-md">
+                            <img 
+                                src="/storage/products/macbook-pro-14-inch-m4-pro-main.jpg" 
+                                alt="Laptop tinh tế" 
+                                class="w-full h-64 sm:h-72 object-contain"
+                                onerror="this.src='/images/placeholder.svg'"
+                            >
+                            
+                            <!-- Floating AI pill card on bottom right -->
+                            <div class="mt-2 p-3 rounded-2xl bg-white/95 backdrop-blur-md border border-slate-100 shadow-md flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+                                </div>
+                                <div class="text-xs">
+                                    <div class="font-bold text-slate-900">Lựa chọn thông minh hơn</div>
+                                    <div class="text-slate-400 text-[11px]">Có trợ lý AI đồng hành cùng bạn</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -586,9 +607,9 @@
             <a href="{{ route('shop.index') }}" class="tilt-card rounded-2xl bg-white border border-slate-200/80 overflow-hidden shadow-2xs hover:shadow-md transition-all group block" data-tilt>
                 <div class="h-48 bg-[#F8FAFC] overflow-hidden relative">
                     <img 
-                        src="{{ asset('images/blog-workspace.jpg') }}" 
-                        alt="Gọn một góc bàn. Rộng một khoảng sáng tạo." 
-                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                        src="/storage/products/macbook-air-13-inch-m4-2025-main.jpg" 
+                        alt="Góc làm việc" 
+                        class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                         onerror="this.src='/images/placeholder.svg'"
                     >
                 </div>
@@ -610,9 +631,9 @@
             <a href="{{ route('shop.index', ['category' => 'laptop']) }}" class="tilt-card rounded-2xl bg-white border border-slate-200/80 overflow-hidden shadow-2xs hover:shadow-md transition-all group block" data-tilt>
                 <div class="h-48 bg-[#F8FAFC] overflow-hidden relative">
                     <img 
-                        src="{{ asset('images/blog-first-laptop.jpg') }}" 
-                        alt="Chọn máy tính đầu tiên: Bắt đầu từ điều bạn cần." 
-                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                        src="/storage/products/asus-expertbook-b9-oled-sieu-nhe-990g-main.jpg" 
+                        alt="Chọn máy tính" 
+                        class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                         onerror="this.src='/images/placeholder.svg'"
                     >
                 </div>
@@ -634,9 +655,9 @@
             <a href="{{ route('shop.index', ['battery' => 'high']) }}" class="tilt-card rounded-2xl bg-white border border-slate-200/80 overflow-hidden shadow-2xs hover:shadow-md transition-all group block" data-tilt>
                 <div class="h-48 bg-[#F8FAFC] overflow-hidden relative">
                     <img 
-                        src="{{ asset('images/blog-battery-habits.jpg') }}" 
-                        alt="Pin bền hơn từ những thói quen nhỏ mỗi ngày." 
-                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                        src="/storage/products/airpods-max-usb-c-2024-main.jpg" 
+                        alt="Pin bền" 
+                        class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                         onerror="this.src='/images/placeholder.svg'"
                     >
                 </div>

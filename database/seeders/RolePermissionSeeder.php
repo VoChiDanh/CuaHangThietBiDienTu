@@ -24,7 +24,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'manage_roles', 'group_name' => 'Tài khoản', 'description' => 'Cấu hình ma trận vai trò và quyền hạn'],
 
             // Quản lý sản phẩm & danh mục
-            ['name' => 'manage_products', 'group_name' => 'Sản phẩm', 'description' => 'Thêm, sửa, xóa sản phẩm, biến thể và cấu hình 3D'],
+            ['name' => 'manage_products', 'group_name' => 'Sản phẩm', 'description' => 'Thêm, sửa, xóa sản phẩm, biến thể, ảnh và thông số kỹ thuật'],
             ['name' => 'manage_categories', 'group_name' => 'Sản phẩm', 'description' => 'Quản lý danh mục và thương hiệu'],
 
             // Quản lý đơn hàng & Kho

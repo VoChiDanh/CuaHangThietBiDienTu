@@ -425,26 +425,17 @@ class ProductSeeder extends Seeder
             }
 
             foreach ($angles as $angleType => $sortOrder) {
-                $imageUrl = "/uploads/products/{$slug}-{$colorSlug}-{$angleType}.jpg";
-
-                if (! is_file(public_path(ltrim($imageUrl, '/')))) {
-                    $imageUrl = "/uploads/products/{$slug}-{$angleType}.jpg";
+                $filename = "{$slug}-{$colorSlug}-{$angleType}.jpg";
+                if (! is_file(storage_path("app/public/products/{$filename}"))) {
+                    $filename = "{$slug}-{$angleType}.jpg";
                     $genericImageCount++;
 
-                    $targetPath = public_path(ltrim($imageUrl, '/'));
-                    if (! is_file($targetPath)) {
-                        $targetDir = dirname($targetPath);
-                        if (! is_dir($targetDir)) {
-                            mkdir($targetDir, 0755, true);
-                        }
-                        $placeholder = public_path('images/placeholder.png');
-                        if (is_file($placeholder)) {
-                            copy($placeholder, $targetPath);
-                        } else {
-                            file_put_contents($targetPath, '');
-                        }
+                    if (! is_file(storage_path("app/public/products/{$filename}"))) {
+                        $filename = "{$slug}-main.jpg";
                     }
                 }
+
+                $imageUrl = "/storage/products/{$filename}";
 
                 $images[] = [
                     'product_id' => $productId,

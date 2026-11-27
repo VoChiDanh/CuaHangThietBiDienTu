@@ -57,10 +57,13 @@ class ProductImageSeederTest extends TestCase
             $colorSlug = trim(preg_replace('/[^a-z0-9]+/', '-', $colorName), '-');
 
             foreach ($variantImages as $image) {
-                $colorImageUrl = "/uploads/products/{$variant->slug}-{$colorSlug}-{$image->angle_type}.jpg";
-                $expectedImageUrl = is_file(public_path(ltrim($colorImageUrl, '/')))
+                $colorImageUrl = "/storage/products/{$variant->slug}-{$colorSlug}-{$image->angle_type}.jpg";
+                $genericImageUrl = "/storage/products/{$variant->slug}-{$image->angle_type}.jpg";
+                $expectedImageUrl = is_file(storage_path("app/public/products/{$variant->slug}-{$colorSlug}-{$image->angle_type}.jpg"))
                     ? $colorImageUrl
-                    : "/uploads/products/{$variant->slug}-{$image->angle_type}.jpg";
+                    : (is_file(storage_path("app/public/products/{$variant->slug}-{$image->angle_type}.jpg"))
+                        ? $genericImageUrl
+                        : "/storage/products/{$variant->slug}-main.jpg");
 
                 $this->assertSame($variant->product_id, $image->product_id);
                 $this->assertSame($expectedImageUrl, $image->image_url);

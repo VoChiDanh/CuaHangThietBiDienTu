@@ -10,7 +10,7 @@ return new class extends Migration
     {
         if (Schema::hasTable('users') && ! Schema::hasColumn('users', 'role_id')) {
             Schema::table('users', function (Blueprint $table) {
-                $table->foreignId('role_id')->nullable()->after('role')->constrained('roles')->nullOnDelete();
+                $table->foreignId('role_id')->nullable()->constrained('roles')->nullOnDelete();
             });
         }
     }

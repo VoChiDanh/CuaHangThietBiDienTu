@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class ProductImage extends Model
 {
@@ -31,6 +33,26 @@ class ProductImage extends Model
         return [
             'sort_order' => 'integer',
         ];
+    }
+
+    protected function imageUrl(): Attribute
+    {
+        return Attribute::make(get: function (string $value): string {
+            $filename = basename($value);
+            if (Storage::disk('public')->exists("products/{$filename}")) {
+                return "/storage/products/{$filename}";
+            }
+
+            $productSlug = $this->product?->slug;
+            if ($productSlug !== null) {
+                $productImage = "products/{$productSlug}-{$this->angle_type}.jpg";
+                if (Storage::disk('public')->exists($productImage)) {
+                    return "/storage/{$productImage}";
+                }
+            }
+
+            return '/images/placeholder.svg';
+        });
     }
 
     /**
