@@ -84,14 +84,15 @@ document.addEventListener('change', (event) => {
 
     const shippingFee = Number(selectedOption.dataset.fee);
     const subtotal = Number(totalDisplay.dataset.subtotal);
+    const discount = Number(totalDisplay.dataset.discount || 0);
 
-    if (!Number.isFinite(shippingFee) || !Number.isFinite(subtotal)) {
+    if (!Number.isFinite(shippingFee) || !Number.isFinite(subtotal) || !Number.isFinite(discount)) {
         return;
     }
 
     feeDisplay.textContent = `${currency.format(shippingFee)} ₫`;
     methodDisplay.textContent = selectedOption.dataset.label;
-    totalDisplay.textContent = `${currency.format(subtotal + shippingFee)} ₫`;
+    totalDisplay.textContent = `${currency.format(subtotal - discount + shippingFee)} ₫`;
 });
 
 function updateCartSummary(result) {

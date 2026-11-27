@@ -6,6 +6,7 @@ use App\Mail\OrderConfirmationMail;
 use App\Models\Brand;
 use App\Models\Cart;
 use App\Models\Category;
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductVariant;
@@ -124,6 +125,146 @@ class CartAndCheckoutTest extends TestCase
         ]);
         $this->assertDatabaseMissing('cart_items', ['cart_id' => $cart->id]);
         Mail::assertQueued(OrderConfirmationMail::class);
+    }
+
+    public function test_checkout_applies_a_coupon_and_records_its_discount_on_the_order(): void
+    {
+        Mail::fake();
+
+        $variant = $this->createVariant(stock: 5);
+        $user = User::factory()->create();
+        $cart = Cart::query()->create(['user_id' => $user->id]);
+        $cart->items()->create([
+            'product_variant_id' => $variant->id,
+            'quantity' => 2,
+        ]);
+        $coupon = Coupon::query()->create([
+            'code' => 'SAVE50',
+            'discount_type' => 'fixed_amount',
+            'discount_value' => 50000,
+            'min_order_amount' => 200000,
+            'usage_limit' => 5,
+            'usage_limit_per_user' => 1,
+            'used_count' => 0,
+            'starts_at' => now()->subDay(),
+            'expires_at' => now()->addDay(),
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($user)
+            ->from(route('checkout.create'))
+            ->post(route('checkout.coupon.apply'), ['coupon_code' => 'save50'])
+            ->assertRedirect(route('checkout.create'))
+            ->assertSessionHas('checkout.coupon_code', 'SAVE50');
+
+        $this->actingAs($user)
+            ->get(route('checkout.create'))
+            ->assertOk()
+            ->assertSee('Mã voucher ưu đãi')
+            ->assertSee('Giảm giá · SAVE50')
+            ->assertSee('-50.000 ₫');
+
+        $response = $this->actingAs($user)->post(route('checkout.store'), [
+            'receiver_name' => 'Nguyen Van A',
+            'receiver_phone' => '0900000000',
+            'province' => 'TP HCM',
+            'district' => 'Quan 1',
+            'ward' => 'Ben Nghe',
+            'street_address' => '1 Nguyen Hue',
+            'shipping_method' => 'standard',
+            'payment_method' => 'cod',
+        ]);
+
+        $order = Order::query()->firstOrFail();
+
+        $response->assertRedirect(route('orders.show', ['orderCode' => $order->order_code]));
+        $this->assertDatabaseHas('orders', [
+            'id' => $order->id,
+            'coupon_id' => $coupon->id,
+            'subtotal' => 24000000,
+            'discount_amount' => 50000,
+            'total_amount' => 23980000,
+        ]);
+        $this->assertDatabaseHas('coupons', [
+            'id' => $coupon->id,
+            'used_count' => 1,
+        ]);
+        $this->assertDatabaseHas('coupon_usages', [
+            'coupon_id' => $coupon->id,
+            'user_id' => $user->id,
+            'order_id' => $order->id,
+        ]);
+        $this->assertFalse(session()->has('checkout.coupon_code'));
+    }
+
+    public function test_checkout_rejects_an_invalid_coupon_code(): void
+    {
+        $variant = $this->createVariant(stock: 5);
+        $user = User::factory()->create();
+        $cart = Cart::query()->create(['user_id' => $user->id]);
+        $cart->items()->create([
+            'product_variant_id' => $variant->id,
+            'quantity' => 1,
+        ]);
+
+        $this->actingAs($user)
+            ->from(route('checkout.create'))
+            ->post(route('checkout.coupon.apply'), ['coupon_code' => 'NOTREAL'])
+            ->assertRedirect(route('checkout.create'))
+            ->assertSessionHasErrors('coupon_code');
+
+        $this->assertFalse(session()->has('checkout.coupon_code'));
+    }
+
+    public function test_checkout_revalidates_coupon_before_creating_order(): void
+    {
+        $variant = $this->createVariant(stock: 5);
+        $user = User::factory()->create();
+        $cart = Cart::query()->create(['user_id' => $user->id]);
+        $cart->items()->create([
+            'product_variant_id' => $variant->id,
+            'quantity' => 1,
+        ]);
+        $coupon = Coupon::query()->create([
+            'code' => 'DISABLE10',
+            'discount_type' => 'fixed_amount',
+            'discount_value' => 50000,
+            'min_order_amount' => 0,
+            'usage_limit' => 5,
+            'usage_limit_per_user' => 1,
+            'used_count' => 0,
+            'starts_at' => now()->subDay(),
+            'expires_at' => now()->addDay(),
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($user)
+            ->post(route('checkout.coupon.apply'), ['coupon_code' => $coupon->code])
+            ->assertRedirect(route('checkout.create'));
+
+        $coupon->update(['is_active' => false]);
+
+        $this->actingAs($user)
+            ->from(route('checkout.create'))
+            ->post(route('checkout.store'), [
+                'receiver_name' => 'Nguyen Van A',
+                'receiver_phone' => '0900000000',
+                'province' => 'TP HCM',
+                'district' => 'Quan 1',
+                'ward' => 'Ben Nghe',
+                'street_address' => '1 Nguyen Hue',
+                'shipping_method' => 'standard',
+                'payment_method' => 'cod',
+            ])
+            ->assertRedirect(route('checkout.create'))
+            ->assertSessionHasErrors('coupon_code');
+
+        $this->assertDatabaseCount('orders', 0);
+        $this->assertDatabaseCount('coupon_usages', 0);
+        $this->assertDatabaseHas('product_variants', [
+            'id' => $variant->id,
+            'stock_quantity' => 5,
+        ]);
     }
 
     public function test_checkout_displays_the_available_shipping_methods_and_fees(): void

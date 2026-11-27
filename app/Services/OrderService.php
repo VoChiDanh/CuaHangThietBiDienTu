@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTOs\CouponCalculationResult;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderStatusHistory;
@@ -14,7 +15,10 @@ use Illuminate\Validation\ValidationException;
 
 class OrderService
 {
-    public function __construct(private readonly CartService $cartService) {}
+    public function __construct(
+        private readonly CartService $cartService,
+        private readonly CouponService $couponService,
+    ) {}
 
     /**
      * @param array{
@@ -26,7 +30,8 @@ class OrderService
      *     ward?: string,
      *     street_address?: string,
      *     note?: string|null,
-     *     shipping_method: string
+     *     shipping_method: string,
+     *     coupon_code?: string|null
      * } $checkoutData
      */
     public function placeOrder(User $user, array $checkoutData): Order
@@ -78,6 +83,27 @@ class OrderService
                 $lockedItems[] = [$cartItem, $variant, $unitPrice];
             }
 
+            $couponResult = null;
+            $discountMinorUnits = 0;
+
+            if (isset($checkoutData['coupon_code']) && $checkoutData['coupon_code'] !== '') {
+                $couponResult = $this->couponService->validateAndCalculate(
+                    $checkoutData['coupon_code'],
+                    $this->fromMinorUnits($subtotalMinorUnits),
+                    (int) $user->getKey(),
+                );
+
+                if (! $couponResult->isValid || $couponResult->couponId === null) {
+                    throw ValidationException::withMessages([
+                        'coupon_code' => $couponResult->message,
+                    ]);
+                }
+
+                $discountMinorUnits = $this->toMinorUnits(
+                    number_format($couponResult->discountAmount, 2, '.', ''),
+                );
+            }
+
             $shippingMethods = config('store.shipping_methods', []);
             $shippingMethod = $shippingMethods[$checkoutData['shipping_method']] ?? null;
 
@@ -95,14 +121,26 @@ class OrderService
                 'receiver_phone' => $address['receiver_phone'],
                 'shipping_address' => $address['shipping_address'],
                 'shipping_method' => $shippingMethod['label'],
+                'coupon_id' => $couponResult?->couponId,
                 'note' => $checkoutData['note'] ?? null,
                 'subtotal' => $this->fromMinorUnits($subtotalMinorUnits),
+                'discount_amount' => $this->fromMinorUnits($discountMinorUnits),
                 'shipping_fee' => $this->fromMinorUnits($shippingFeeMinorUnits),
-                'total_amount' => $this->fromMinorUnits($subtotalMinorUnits + $shippingFeeMinorUnits),
+                'total_amount' => $this->fromMinorUnits(
+                    $subtotalMinorUnits - $discountMinorUnits + $shippingFeeMinorUnits,
+                ),
                 'status' => 'pending',
                 'payment_method' => $checkoutData['payment_method'] ?? 'cod',
                 'payment_status' => 'unpaid',
             ]);
+
+            if ($couponResult instanceof CouponCalculationResult && $couponResult->couponId !== null) {
+                $this->couponService->consumeCoupon(
+                    $couponResult->couponId,
+                    (int) $user->getKey(),
+                    (int) $order->getKey(),
+                );
+            }
 
             if ($order->payment_method === 'vnpay') {
                 $order->paymentTransactions()->create([

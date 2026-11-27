@@ -425,17 +425,7 @@ class ProductSeeder extends Seeder
             }
 
             foreach ($angles as $angleType => $sortOrder) {
-                $filename = "{$slug}-{$colorSlug}-{$angleType}.jpg";
-                if (! is_file(storage_path("app/public/products/{$filename}"))) {
-                    $filename = "{$slug}-{$angleType}.jpg";
-                    $genericImageCount++;
-
-                    if (! is_file(storage_path("app/public/products/{$filename}"))) {
-                        $filename = "{$slug}-main.jpg";
-                    }
-                }
-
-                $imageUrl = "/storage/products/{$filename}";
+                $imageUrl = $this->resolveProductImageUrl($slug, $colorSlug, $angleType, $genericImageCount);
 
                 $images[] = [
                     'product_id' => $productId,
@@ -456,6 +446,52 @@ class ProductSeeder extends Seeder
         }
 
         $this->command->info('Đã gắn thành công '.count($images).' hình ảnh cho '.count($variants).' biến thể.');
+    }
+
+    /**
+     * Resolve an existing image from public storage or public uploads, creating a placeholder only when absent.
+     */
+    private function resolveProductImageUrl(string $slug, string $colorSlug, string $angleType, int &$genericImageCount): string
+    {
+        $hasPublicStorage = is_dir(public_path('storage'));
+        $colorFilename = "{$slug}-{$colorSlug}-{$angleType}.jpg";
+
+        if ($hasPublicStorage && is_file(storage_path("app/public/products/{$colorFilename}"))) {
+            return "/storage/products/{$colorFilename}";
+        }
+
+        if (is_file(public_path("uploads/products/{$colorFilename}"))) {
+            return "/uploads/products/{$colorFilename}";
+        }
+
+        $genericImageCount++;
+        $candidates = ["{$slug}-{$angleType}.jpg", "{$slug}-main.jpg"];
+
+        foreach ($candidates as $filename) {
+            if ($hasPublicStorage && is_file(storage_path("app/public/products/{$filename}"))) {
+                return "/storage/products/{$filename}";
+            }
+
+            if (is_file(public_path("uploads/products/{$filename}"))) {
+                return "/uploads/products/{$filename}";
+            }
+        }
+
+        $fallbackPath = "/uploads/products/{$slug}-{$angleType}.jpg";
+        $targetPath = public_path(ltrim($fallbackPath, '/'));
+        $targetDir = dirname($targetPath);
+        if (! is_dir($targetDir)) {
+            mkdir($targetDir, 0755, true);
+        }
+
+        $placeholder = public_path('images/placeholder.png');
+        if (is_file($placeholder)) {
+            copy($placeholder, $targetPath);
+        } else {
+            file_put_contents($targetPath, '');
+        }
+
+        return $fallbackPath;
     }
 
     /**

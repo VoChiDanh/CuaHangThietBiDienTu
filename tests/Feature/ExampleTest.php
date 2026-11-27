@@ -17,5 +17,8 @@ class ExampleTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
+        $response->assertSee('Đã được 12.500+ khách hàng tin chọn');
+        $response->assertSee('images/blog-workspace.jpg');
+        $response->assertDontSee('Có trợ lý AI đồng hành cùng bạn');
     }
 }

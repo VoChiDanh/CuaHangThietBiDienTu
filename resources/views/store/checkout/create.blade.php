@@ -28,15 +28,13 @@
         </div>
     @endif
 
-    <div id="checkout-client-alert" class="hidden mb-6 rounded-2xl bg-rose-50 border border-rose-200/90 p-4 sm:p-5 text-rose-800 text-xs sm:text-sm shadow-2xs" role="alert">
-        <div class="flex items-start gap-3">
-            <i class="fa-solid fa-circle-exclamation text-rose-500 text-base mt-0.5 shrink-0"></i>
-            <div class="space-y-1">
-                <p class="font-bold text-rose-900">Bạn chưa nhập đầy đủ thông tin nhận hàng:</p>
-                <p id="checkout-client-alert-text" class="text-rose-700 text-xs sm:text-sm">Vui lòng điền đầy đủ các mục được đánh dấu bên dưới trước khi đặt hàng.</p>
-            </div>
-        </div>
-    </div>
+    @if (session('status'))
+        <p class="flash-message" role="status">{{ session('status') }}</p>
+    @endif
+
+    @if (session('coupon_warning'))
+        <p class="form-errors" role="alert">{{ session('coupon_warning') }}</p>
+    @endif
 
     <div class="checkout-layout">
         <form id="checkout-form" class="card checkout-form" action="{{ route('checkout.store') }}" method="POST" novalidate>
@@ -224,13 +222,40 @@
                 <span>Giao hàng · <span data-shipping-method-label>{{ $shippingMethods[$selectedShippingMethod]['label'] }}</span></span>
                 <strong data-shipping-fee>{{ number_format($shippingFee, 0, ',', '.') }} ₫</strong>
             </div>
+            @if ($coupon)
+                <div class="summary-line">
+                    <span>Giảm giá · {{ $coupon->code }}</span>
+                    <strong>-{{ number_format($coupon->discountAmount, 0, ',', '.') }} ₫</strong>
+                </div>
+            @endif
+            <form class="coupon-form" action="{{ route('checkout.coupon.apply') }}" method="POST">
+                @csrf
+                <label class="field-label" for="coupon_code">Mã voucher ưu đãi</label>
+                <div class="coupon-form-row">
+                    <input
+                        id="coupon_code"
+                        name="coupon_code"
+                        value="{{ old('coupon_code', $coupon?->code ?? '') }}"
+                        autocomplete="off"
+                        placeholder="Nhập mã voucher"
+                        required
+                    >
+                    <button class="button button-secondary" type="submit">Áp dụng</button>
+                </div>
+                @if ($coupon)
+                    <p class="coupon-applied" role="status">{{ $coupon->message }}</p>
+                @endif
+            </form>
             <div class="summary-total">
                 <span>Tổng thanh toán</span>
-                <strong data-checkout-total data-subtotal="{{ (int) round($subtotal) }}">
-                    {{ number_format($subtotal + $shippingFee, 0, ',', '.') }} ₫
+                <strong
+                    data-checkout-total
+                    data-subtotal="{{ (int) round($subtotal) }}"
+                    data-discount="{{ (int) round($discountAmount) }}"
+                >
+                    {{ number_format($subtotal - $discountAmount + $shippingFee, 0, ',', '.') }} ₫
                 </strong>
             </div>
-            <p class="secure-note">Thông tin đặt hàng và thanh toán được bảo mật an toàn.</p>
         </aside>
     </div>
 </div>

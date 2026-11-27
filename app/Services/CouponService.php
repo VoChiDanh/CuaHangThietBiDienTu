@@ -173,9 +173,26 @@ class CouponService
         DB::transaction(function () use ($couponId, $userId, $orderId): void {
             $coupon = Coupon::query()->lockForUpdate()->findOrFail($couponId);
 
+            if (! $coupon->is_active || ! $coupon->isValidTime()) {
+                throw ValidationException::withMessages([
+                    'coupon_code' => 'Mã giảm giá không còn hiệu lực.',
+                ]);
+            }
+
             if ($coupon->usage_limit !== null && $coupon->used_count >= $coupon->usage_limit) {
                 throw ValidationException::withMessages([
-                    'coupon' => 'Mã giảm giá vừa hết lượt sử dụng trên hệ thống.',
+                    'coupon_code' => 'Mã giảm giá vừa hết lượt sử dụng trên hệ thống.',
+                ]);
+            }
+
+            $userUsageCount = CouponUsage::query()
+                ->where('coupon_id', $coupon->id)
+                ->where('user_id', $userId)
+                ->count();
+
+            if ($userUsageCount >= $coupon->usage_limit_per_user) {
+                throw ValidationException::withMessages([
+                    'coupon_code' => 'Bạn đã sử dụng hết số lần cho phép của mã giảm giá này.',
                 ]);
             }
 

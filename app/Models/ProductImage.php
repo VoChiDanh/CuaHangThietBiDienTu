@@ -37,17 +37,34 @@ class ProductImage extends Model
 
     protected function imageUrl(): Attribute
     {
-        return Attribute::make(get: function (string $value): string {
-            $filename = basename($value);
-            if (Storage::disk('public')->exists("products/{$filename}")) {
-                return "/storage/products/{$filename}";
+        return Attribute::make(get: function (?string $value): string {
+            if ($value !== null && str_starts_with($value, 'http')) {
+                return $value;
+            }
+
+            $filename = $value !== null ? basename($value) : '';
+            if ($filename !== '') {
+                $storagePath = "products/{$filename}";
+                if (Storage::disk('public')->exists($storagePath) && (is_dir(public_path('storage')) || ! is_file(public_path("uploads/products/{$filename}")))) {
+                    return "/storage/{$storagePath}";
+                }
+
+                if (is_file(public_path("uploads/products/{$filename}"))) {
+                    return "/uploads/products/{$filename}";
+                }
             }
 
             $productSlug = $this->product?->slug;
             if ($productSlug !== null) {
-                $productImage = "products/{$productSlug}-{$this->angle_type}.jpg";
-                if (Storage::disk('public')->exists($productImage)) {
-                    return "/storage/{$productImage}";
+                foreach (["{$productSlug}-{$this->angle_type}.jpg", "{$productSlug}-main.jpg"] as $fallbackName) {
+                    $storagePath = "products/{$fallbackName}";
+                    if (Storage::disk('public')->exists($storagePath) && is_dir(public_path('storage'))) {
+                        return "/storage/{$storagePath}";
+                    }
+
+                    if (is_file(public_path("uploads/products/{$fallbackName}"))) {
+                        return "/uploads/products/{$fallbackName}";
+                    }
                 }
             }
 

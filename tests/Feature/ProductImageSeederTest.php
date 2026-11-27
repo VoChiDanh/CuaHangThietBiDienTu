@@ -3,8 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\Product;
+use App\Models\ProductImage;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ProductImageSeederTest extends TestCase
@@ -57,18 +59,64 @@ class ProductImageSeederTest extends TestCase
             $colorSlug = trim(preg_replace('/[^a-z0-9]+/', '-', $colorName), '-');
 
             foreach ($variantImages as $image) {
-                $colorImageUrl = "/storage/products/{$variant->slug}-{$colorSlug}-{$image->angle_type}.jpg";
-                $genericImageUrl = "/storage/products/{$variant->slug}-{$image->angle_type}.jpg";
-                $expectedImageUrl = is_file(storage_path("app/public/products/{$variant->slug}-{$colorSlug}-{$image->angle_type}.jpg"))
-                    ? $colorImageUrl
-                    : (is_file(storage_path("app/public/products/{$variant->slug}-{$image->angle_type}.jpg"))
-                        ? $genericImageUrl
-                        : "/storage/products/{$variant->slug}-main.jpg");
+                $hasPublicStorage = is_dir(public_path('storage'));
+                $colorFilename = "{$variant->slug}-{$colorSlug}-{$image->angle_type}.jpg";
+                $angleFilename = "{$variant->slug}-{$image->angle_type}.jpg";
+                $mainFilename = "{$variant->slug}-main.jpg";
+
+                if ($hasPublicStorage && is_file(storage_path("app/public/products/{$colorFilename}"))) {
+                    $expectedImageUrl = "/storage/products/{$colorFilename}";
+                } elseif (is_file(public_path("uploads/products/{$colorFilename}"))) {
+                    $expectedImageUrl = "/uploads/products/{$colorFilename}";
+                } elseif ($hasPublicStorage && is_file(storage_path("app/public/products/{$angleFilename}"))) {
+                    $expectedImageUrl = "/storage/products/{$angleFilename}";
+                } elseif (is_file(public_path("uploads/products/{$angleFilename}"))) {
+                    $expectedImageUrl = "/uploads/products/{$angleFilename}";
+                } elseif ($hasPublicStorage && is_file(storage_path("app/public/products/{$mainFilename}"))) {
+                    $expectedImageUrl = "/storage/products/{$mainFilename}";
+                } elseif (is_file(public_path("uploads/products/{$mainFilename}"))) {
+                    $expectedImageUrl = "/uploads/products/{$mainFilename}";
+                } else {
+                    $expectedImageUrl = "/uploads/products/{$angleFilename}";
+                }
 
                 $this->assertSame($variant->product_id, $image->product_id);
                 $this->assertSame($expectedImageUrl, $image->image_url);
                 $this->assertFileExists(public_path(ltrim($image->image_url, '/')));
             }
+        }
+    }
+
+    public function test_product_image_accessor_supports_uploads_and_public_storage(): void
+    {
+        $tempUploadPath = public_path('uploads/products/test-accessor-sample.jpg');
+        if (! is_dir(dirname($tempUploadPath))) {
+            mkdir(dirname($tempUploadPath), 0755, true);
+        }
+        file_put_contents($tempUploadPath, 'test-image-bytes');
+
+        try {
+            $uploadImage = new ProductImage([
+                'image_url' => '/uploads/products/test-accessor-sample.jpg',
+                'angle_type' => 'main',
+            ]);
+            $this->assertSame('/uploads/products/test-accessor-sample.jpg', $uploadImage->image_url);
+
+            Storage::fake('public');
+            Storage::disk('public')->put('products/uploaded-sample.jpg', 'stored-bytes');
+            $storageImage = new ProductImage([
+                'image_url' => '/storage/products/uploaded-sample.jpg',
+                'angle_type' => 'main',
+            ]);
+            $this->assertSame('/storage/products/uploaded-sample.jpg', $storageImage->image_url);
+
+            $missingImage = new ProductImage([
+                'image_url' => '/uploads/products/non-existent-image.jpg',
+                'angle_type' => 'main',
+            ]);
+            $this->assertSame('/images/placeholder.svg', $missingImage->image_url);
+        } finally {
+            @unlink($tempUploadPath);
         }
     }
 }

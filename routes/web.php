@@ -105,6 +105,7 @@ Route::middleware('auth')->group(function () {
 
     // Checkout & Đơn hàng người dùng
     Route::get('/checkout', [CheckoutController::class, 'create'])->name('checkout.create');
+    Route::post('/checkout/coupon', [CheckoutController::class, 'applyCoupon'])->name('checkout.coupon.apply');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
     Route::get('/orders/{orderCode}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{orderCode}/payment/retry', [PaymentController::class, 'retry'])->name('orders.payment.retry');
