@@ -1,2 +1,12 @@
 *
 !.gitignore
+!products/
+products/*
+!products/macbook-air-15-inch-m3*
+!products/macbook-air-15-inch-m4-2025*
+!products/ban-phim-co-gaming-logitech-g515-lightspeed-tkl*
+!products/ban-phim-co-gaming-logitech-g-pro-x-60-lightspeed*
+!products/ban-phim-khong-day-logitech-pebble-keys-2-k380s*
+!products/samsung-galaxy-s24*
+!products/rog-phone-8-pro-16gb512gb*
+!products/iphone-16-pro-max-256gb-vna*

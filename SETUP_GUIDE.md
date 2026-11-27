@@ -77,7 +77,19 @@ Nếu chưa có file `.env`, hãy copy từ `.env.example`:
   # Hoặc: ./vendor/bin/sail artisan migrate
   ```
 
-### Bước 5: Cài đặt thư viện Frontend & Biên dịch Assets
+### Bước 5: Tạo liên kết đến ảnh sản phẩm và tệp tải lên
+Ảnh nằm trong `storage/app/public/products`. Sau khi clone hoặc pull cập nhật mới, chạy lệnh sau để website phục vụ ảnh qua đường dẫn `/storage`:
+- **Windows:**
+  ```powershell
+  docker compose exec laravel.test php artisan storage:link
+  ```
+- **macOS / Linux:**
+  ```bash
+  docker compose exec laravel.test php artisan storage:link
+  # Hoặc: ./vendor/bin/sail artisan storage:link
+  ```
+
+### Bước 6: Cài đặt thư viện Frontend & Biên dịch Assets
 - **Windows:**
   ```powershell
   docker compose exec laravel.test npm install
