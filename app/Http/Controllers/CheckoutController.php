@@ -66,6 +66,26 @@ class CheckoutController extends Controller
             'note' => ['nullable', 'string', 'max:2000'],
             'shipping_method' => ['required', 'string', Rule::in(array_keys(config('store.shipping_methods', [])))],
             'payment_method' => ['required', 'in:cod,vnpay'],
+        ], [
+            'address_id.integer' => 'Địa chỉ nhận hàng đã chọn không hợp lệ.',
+            'address_id.exists' => 'Địa chỉ nhận hàng đã chọn không tồn tại.',
+            'receiver_name.required_without' => 'Vui lòng nhập họ tên người nhận.',
+            'receiver_name.max' => 'Tên người nhận không được vượt quá 255 ký tự.',
+            'receiver_phone.required_without' => 'Vui lòng nhập số điện thoại nhận hàng.',
+            'receiver_phone.max' => 'Số điện thoại nhận hàng không được vượt quá 20 ký tự.',
+            'street_address.required_without' => 'Vui lòng nhập địa chỉ cụ thể (số nhà, tên đường).',
+            'street_address.max' => 'Địa chỉ cụ thể không được vượt quá 255 ký tự.',
+            'ward.required_without' => 'Vui lòng nhập phường / xã.',
+            'ward.max' => 'Phường / xã không được vượt quá 100 ký tự.',
+            'district.required_without' => 'Vui lòng nhập quận / huyện.',
+            'district.max' => 'Quận / huyện không được vượt quá 100 ký tự.',
+            'province.required_without' => 'Vui lòng nhập tỉnh / thành phố.',
+            'province.max' => 'Tỉnh / thành phố không được vượt quá 100 ký tự.',
+            'note.max' => 'Ghi chú đơn hàng không được vượt quá 2.000 ký tự.',
+            'shipping_method.required' => 'Vui lòng chọn đơn vị vận chuyển.',
+            'shipping_method.in' => 'Đơn vị vận chuyển đã chọn không hợp lệ.',
+            'payment_method.required' => 'Vui lòng chọn phương thức thanh toán.',
+            'payment_method.in' => 'Phương thức thanh toán đã chọn không hợp lệ.',
         ]);
 
         if ($validated['payment_method'] === 'vnpay' && ! $this->vnpayService->isConfigured()) {

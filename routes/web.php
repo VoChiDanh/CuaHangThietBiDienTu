@@ -41,9 +41,6 @@ Route::get('/san-pham', [ProductController::class, 'index'])->name('products.ind
 Route::get('/san-pham/{slug}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show.alias');
 Route::get('/compare', [ProductComparisonController::class, 'index'])->name('compare.index');
-Route::get('/welcome', function () {
-    return view('welcome');
-})->name('welcome');
 
 // =========================================================================
 // PHÂN HỆ GIỎ HÀNG, THANH TOÁN & ĐƠN HÀNG (THÀNH VIÊN 4)

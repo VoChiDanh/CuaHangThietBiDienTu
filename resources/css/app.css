@@ -145,22 +145,6 @@
 }
 
 @layer components {
-.container {
-    width: min(1120px, calc(100% - 40px));
-    margin: 0 auto;
-}
-
-.site-header {
-    position: sticky;
-    z-index: 5;
-    top: 0;
-    border-bottom: 1px solid #e8ebf2;
-    background: rgb(255 255 255 / 94%);
-    backdrop-filter: blur(12px);
-}
-
-.header-content,
-.main-nav,
 .page-heading,
 .status-heading,
 .summary-line,
@@ -171,51 +155,9 @@
     justify-content: space-between;
 }
 
-.header-content {
-    min-height: 76px;
-}
-
-.brand {
-    color: #1747b0;
-    font-size: 1.15rem;
-    font-weight: 850;
-    letter-spacing: .12em;
-}
-
-.main-nav {
-    gap: 28px;
-    color: #536078;
-    font-size: .94rem;
-    font-weight: 650;
-}
-
-.main-nav a:hover,
 .text-link:hover,
 .button-link:hover {
-    color: #1747b0;
-}
-
-.cart-badge {
-    display: inline-grid;
-    min-width: 22px;
-    height: 22px;
-    margin-left: 4px;
-    padding: 0 5px;
-    place-items: center;
-    border-radius: 999px;
-    background: #eaf0ff;
-    color: #1747b0;
-    font-size: .75rem;
-}
-
-.nav-user {
-    color: #172033;
-}
-
-.page-content {
-    min-height: calc(100vh - 156px);
-    padding-top: 40px;
-    padding-bottom: 64px;
+    color: #1d4ed8;
 }
 
 .page-heading {
@@ -227,119 +169,6 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-}
-
-.home-hero {
-    display: grid;
-    min-height: 390px;
-    grid-template-columns: minmax(0, 1.3fr) minmax(260px, .7fr);
-    align-items: center;
-    gap: 50px;
-    padding: 48px;
-    overflow: hidden;
-    border-radius: 24px;
-    background:
-        radial-gradient(circle at 82% 18%, rgb(96 144 255 / 27%), transparent 34%),
-        linear-gradient(125deg, #10275c, #1747b0 75%, #2d66d4);
-    color: #fff;
-}
-
-.home-copy {
-    max-width: 650px;
-}
-
-.home-copy .eyebrow {
-    color: #b6ccff;
-}
-
-.home-copy h1 {
-    margin: 14px 0;
-    font-size: clamp(2.2rem, 5vw, 3.8rem);
-    letter-spacing: -.055em;
-    line-height: 1.05;
-}
-
-.home-copy > p:not(.eyebrow) {
-    max-width: 520px;
-    color: #d6e2ff;
-    line-height: 1.7;
-}
-
-.home-copy .button-secondary {
-    background: rgb(255 255 255 / 14%);
-    color: #fff;
-}
-
-.home-card {
-    display: grid;
-    min-height: 220px;
-    align-content: center;
-    justify-items: center;
-    gap: 12px;
-    border: 1px solid rgb(255 255 255 / 24%);
-    border-radius: 22px;
-    background: rgb(255 255 255 / 10%);
-    box-shadow: 0 25px 60px rgb(3 14 43 / 22%);
-    backdrop-filter: blur(12px);
-}
-
-.home-card-icon {
-    display: grid;
-    width: 84px;
-    height: 84px;
-    place-items: center;
-    border-radius: 24px;
-    background: #fff;
-    color: #1747b0;
-    font-size: 1.6rem;
-    font-weight: 900;
-    letter-spacing: .08em;
-}
-
-.home-card strong {
-    font-size: 1.12rem;
-}
-
-.home-card > span:last-child {
-    color: #d6e2ff;
-    font-size: .86rem;
-}
-
-.home-features {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-    margin-top: 24px;
-}
-
-.feature-card {
-    display: block;
-    padding: 24px;
-    transition: transform .15s ease, box-shadow .15s ease;
-}
-
-.feature-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 16px 35px rgb(22 37 69 / 8%);
-}
-
-.feature-number {
-    color: #1747b0;
-    font-size: .75rem;
-    font-weight: 850;
-    letter-spacing: .12em;
-}
-
-.feature-card h2 {
-    margin: 16px 0 8px;
-    font-size: 1.1rem;
-}
-
-.feature-card p {
-    margin: 0;
-    color: #6b7890;
-    font-size: .9rem;
-    line-height: 1.6;
 }
 
 .page-heading h1,
@@ -823,77 +652,6 @@ textarea:focus {
     font-size: .82rem;
 }
 
-.site-footer {
-    padding: 24px 0;
-    border-top: 1px solid #e8ebf2;
-    background: #fff;
-    color: #6b7890;
-    font-size: .85rem;
-}
-
-.admin-shell {
-    display: flex;
-    min-height: 100vh;
-    background: #f5f7fb;
-}
-
-.admin-sidebar {
-    width: 250px;
-    flex: 0 0 250px;
-    padding: 26px 20px;
-    background: #111d35;
-    color: #fff;
-}
-
-.admin-sidebar .brand {
-    color: #fff;
-}
-
-.sidebar-label {
-    margin: 40px 10px 12px;
-    color: #9aa8c3;
-    font-size: .7rem;
-    font-weight: 800;
-    letter-spacing: .14em;
-}
-
-.admin-sidebar nav {
-    display: grid;
-    gap: 6px;
-}
-
-.admin-sidebar nav a {
-    padding: 11px 12px;
-    border-radius: 9px;
-    color: #d2dbed;
-    font-size: .9rem;
-}
-
-.admin-sidebar nav a:hover {
-    background: #223253;
-    color: #fff;
-}
-
-.admin-main {
-    min-width: 0;
-    flex: 1;
-}
-
-.admin-topbar {
-    display: flex;
-    min-height: 72px;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 30px;
-    border-bottom: 1px solid #e8ebf2;
-    background: #fff;
-    font-weight: 700;
-}
-
-.admin-content {
-    padding: 30px;
-}
-
 .filter-form,
 .status-form {
     display: grid;
@@ -1009,20 +767,6 @@ textarea:focus {
         grid-template-columns: 1fr;
     }
 
-    .home-hero {
-        grid-template-columns: 1fr;
-        gap: 28px;
-        padding: 32px;
-    }
-
-    .home-card {
-        min-height: 180px;
-    }
-
-    .home-features {
-        grid-template-columns: 1fr;
-    }
-
     .cart-row {
         grid-template-columns: 64px minmax(0, 1fr) auto;
         gap: 12px;
@@ -1044,27 +788,6 @@ textarea:focus {
 }
 
 @media (max-width: 560px) {
-    .container {
-        width: min(100% - 28px, 1120px);
-    }
-
-    .header-content {
-        min-height: 64px;
-    }
-
-    .main-nav {
-        gap: 13px;
-        font-size: .78rem;
-    }
-
-    .nav-user {
-        display: none;
-    }
-
-    .page-content {
-        padding-top: 28px;
-    }
-
     .page-heading {
         align-items: flex-start;
         flex-direction: column;
@@ -1114,32 +837,6 @@ textarea:focus {
 
     .field-grid {
         grid-template-columns: 1fr;
-    }
-
-    .admin-sidebar {
-        width: 74px;
-        flex-basis: 74px;
-        padding: 20px 10px;
-    }
-
-    .admin-sidebar .brand,
-    .sidebar-label,
-    .admin-sidebar nav a {
-        overflow: hidden;
-        font-size: 0;
-    }
-
-    .admin-sidebar .brand::first-letter {
-        font-size: 1.2rem;
-    }
-
-    .admin-sidebar nav a {
-        height: 42px;
-        padding: 8px;
-    }
-
-    .admin-content {
-        padding: 18px;
     }
 }
 }

@@ -229,4 +229,36 @@ class CartAndCheckoutTest extends TestCase
             'stock_quantity' => $stock,
         ]);
     }
+
+    public function test_checkout_returns_vietnamese_validation_messages_when_address_fields_are_missing(): void
+    {
+        $variant = $this->createVariant(stock: 5);
+        $user = User::factory()->create();
+        $cart = Cart::query()->create(['user_id' => $user->id]);
+        $cart->items()->create([
+            'product_variant_id' => $variant->id,
+            'quantity' => 1,
+        ]);
+
+        $response = $this->actingAs($user)
+            ->from(route('checkout.create'))
+            ->post(route('checkout.store'), [
+                'receiver_name' => 'Nguyen Van A',
+                'receiver_phone' => '0900000000',
+                'province' => '',
+                'district' => '',
+                'ward' => '',
+                'street_address' => '',
+                'shipping_method' => 'standard',
+                'payment_method' => 'cod',
+            ]);
+
+        $response->assertRedirect(route('checkout.create'))
+            ->assertSessionHasErrors([
+                'street_address' => 'Vui lòng nhập địa chỉ cụ thể (số nhà, tên đường).',
+                'ward' => 'Vui lòng nhập phường / xã.',
+                'district' => 'Vui lòng nhập quận / huyện.',
+                'province' => 'Vui lòng nhập tỉnh / thành phố.',
+            ]);
+    }
 }

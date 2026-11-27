@@ -35,6 +35,11 @@ class OrderController extends Controller
         $validated = $request->validate([
             'order_code' => ['required', 'string', 'max:50'],
             'receiver_phone' => ['required', 'string', 'max:20'],
+        ], [
+            'order_code.required' => 'Vui lòng nhập mã đơn hàng.',
+            'order_code.max' => 'Mã đơn hàng không được vượt quá 50 ký tự.',
+            'receiver_phone.required' => 'Vui lòng nhập số điện thoại nhận hàng.',
+            'receiver_phone.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
         ]);
 
         $order = Order::query()
@@ -57,6 +62,11 @@ class OrderController extends Controller
         $validated = $request->validate([
             'order_code' => ['required', 'string', 'max:50'],
             'receiver_phone' => ['required', 'string', 'max:20'],
+        ], [
+            'order_code.required' => 'Vui lòng nhập mã đơn hàng.',
+            'order_code.max' => 'Mã đơn hàng không được vượt quá 50 ký tự.',
+            'receiver_phone.required' => 'Vui lòng nhập số điện thoại nhận hàng.',
+            'receiver_phone.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
         ]);
 
         $order = Order::query()
