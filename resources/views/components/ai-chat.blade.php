@@ -1,11 +1,11 @@
-<!-- FLOATING SPEED DIAL & AI CHATBOT WIDGET (THÀNH VIÊN 3) -->
-<div id="smarttech-ai-widget" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+<!-- FLOATING SPEED DIAL & AI CHATBOT WIDGET -->
+<div id="dnd-ai-widget" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
 
     <!-- ==================== 1. SPEED DIAL 2 VÒNG TRÒN (TƯ VẤN AI & CSKH) ==================== -->
     <div id="ai-speed-dial-menu" class="hidden flex flex-col items-end gap-3 mb-3 transition-all duration-300">
         
         <!-- VÒNG TRÒN 1: CSKH (CHĂM SÓC KHÁCH HÀNG) -->
-        <div class="flex items-center gap-2 group cursor-pointer" onclick="window.SmartTechAI.openCSKH()">
+        <div class="flex items-center gap-2 group cursor-pointer" onclick="window.DndAI.openCSKH()">
             <span class="px-3 py-1.5 rounded-xl bg-white/95 backdrop-blur-xs text-slate-800 text-xs font-bold shadow-lg border border-slate-200/80 whitespace-nowrap transition-transform group-hover:scale-105">
                 🎧 CSKH (1900 8888)
             </span>
@@ -19,7 +19,7 @@
         </div>
 
         <!-- VÒNG TRÒN 2: TƯ VẤN AI (GEMINI) -->
-        <div class="flex items-center gap-2 group cursor-pointer" onclick="window.SmartTechAI.openAIChatFromMenu()">
+        <div class="flex items-center gap-2 group cursor-pointer" onclick="window.DndAI.openAIChatFromMenu()">
             <span class="px-3 py-1.5 rounded-xl bg-white/95 backdrop-blur-xs text-slate-800 text-xs font-bold shadow-lg border border-slate-200/80 whitespace-nowrap transition-transform group-hover:scale-105">
                 ✨ Tư vấn AI (Gemini)
             </span>
@@ -38,7 +38,7 @@
     <button 
         id="ai-chat-toggle-btn" 
         type="button"
-        onclick="window.SmartTechAI.toggleSpeedDial()"
+        onclick="window.DndAI.toggleSpeedDial()"
         class="relative flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 text-white shadow-xl shadow-indigo-500/30 hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-hidden"
         title="Trung tâm hỗ trợ khách hàng"
     >
@@ -67,7 +67,7 @@
                     <p class="text-[11px] text-emerald-100 font-normal mt-1 leading-none">D&D Support 24/7</p>
                 </div>
             </div>
-            <button type="button" onclick="window.SmartTechAI.closeCSKH()" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-xs transition-colors">
+            <button type="button" onclick="window.DndAI.closeCSKH()" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-xs transition-colors">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
@@ -121,7 +121,7 @@
             <!-- Switch to AI button -->
             <button 
                 type="button" 
-                onclick="window.SmartTechAI.closeCSKH(); window.SmartTechAI.openChat();"
+                onclick="window.DndAI.closeCSKH(); window.DndAI.openChat();"
                 class="w-full py-2.5 rounded-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
             >
                 <i class="fa-solid fa-sparkles text-[11px]"></i>
@@ -151,7 +151,7 @@
             </div>
             <button 
                 type="button" 
-                onclick="window.SmartTechAI.closeChat()" 
+                onclick="window.DndAI.closeChat()" 
                 class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors text-sm"
             >
                 <i class="fa-solid fa-chevron-down"></i>
@@ -174,16 +174,16 @@
             <div id="ai-quick-prompts" class="space-y-1.5 pt-1">
                 <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Gợi ý câu hỏi nhanh:</p>
                 <div class="flex flex-wrap gap-1.5">
-                    <button type="button" onclick="window.SmartTechAI.sendPrompt('Máy nào pin trâu dùng cả ngày tốt nhất?')" class="px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 rounded-full border border-slate-200 text-[11px] transition-colors">
+                    <button type="button" onclick="window.DndAI.sendPrompt('Máy nào pin trâu dùng cả ngày tốt nhất?')" class="px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 rounded-full border border-slate-200 text-[11px] transition-colors">
                         🔋 Máy nào pin trâu nhất?
                     </button>
-                    <button type="button" onclick="window.SmartTechAI.sendPrompt('Laptop siêu nhẹ dưới 1.3kg mang đi làm?')" class="px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 rounded-full border border-slate-200 text-[11px] transition-colors">
+                    <button type="button" onclick="window.DndAI.sendPrompt('Laptop siêu nhẹ dưới 1.3kg mang đi làm?')" class="px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 rounded-full border border-slate-200 text-[11px] transition-colors">
                         🪶 Laptop siêu nhẹ &lt; 1.3kg
                     </button>
-                    <button type="button" onclick="window.SmartTechAI.sendPrompt('Tư vấn laptop gaming mượt mà dưới 25 triệu?')" class="px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 rounded-full border border-slate-200 text-[11px] transition-colors">
+                    <button type="button" onclick="window.DndAI.sendPrompt('Tư vấn laptop gaming mượt mà dưới 25 triệu?')" class="px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 rounded-full border border-slate-200 text-[11px] transition-colors">
                         🎮 Gaming dưới 25 triệu
                     </button>
-                    <button type="button" onclick="window.SmartTechAI.sendPrompt('So sánh MacBook Air M4 và Dell XPS 13?')" class="px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 rounded-full border border-slate-200 text-[11px] transition-colors">
+                    <button type="button" onclick="window.DndAI.sendPrompt('So sánh MacBook Air M4 và Dell XPS 13?')" class="px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 rounded-full border border-slate-200 text-[11px] transition-colors">
                         ⚖️ So sánh MacBook vs XPS
                     </button>
                 </div>
@@ -192,7 +192,7 @@
 
         <!-- Chat Input Footer -->
         <div class="p-3 bg-white border-t border-slate-100 shrink-0">
-            <form id="ai-chat-form" onsubmit="window.SmartTechAI.handleSubmit(event)" class="flex items-center gap-2">
+            <form id="ai-chat-form" onsubmit="window.DndAI.handleSubmit(event)" class="flex items-center gap-2">
                 <input 
                     type="text" 
                     id="ai-chat-input"
@@ -210,20 +210,20 @@
             </form>
             <div class="flex items-center justify-between text-[10px] text-slate-400 mt-2 px-1">
                 <span>Trí tuệ nhân tạo Gemini &bull; Phản hồi tự động</span>
-                <span class="hover:underline cursor-pointer" onclick="window.SmartTechAI.clearChat()">Xóa chat</span>
+                <span class="hover:underline cursor-pointer" onclick="window.DndAI.clearChat()">Xóa chat</span>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-window.SmartTechAI = (function() {
+window.DndAI = (function() {
     let isSpeedDialOpen = false;
     let isChatOpen = false;
     let isCSKHOpen = false;
 
-    let sessionId = localStorage.getItem('smarttech_ai_session') || ('sess_' + Math.random().toString(36).substring(2, 12));
-    localStorage.setItem('smarttech_ai_session', sessionId);
+    let sessionId = localStorage.getItem('dnd_ai_session') || localStorage.getItem('smarttech_ai_session') || ('sess_' + Math.random().toString(36).substring(2, 12));
+    localStorage.setItem('dnd_ai_session', sessionId);
 
     let currentProductId = null;
 
@@ -391,7 +391,7 @@ window.SmartTechAI = (function() {
                 <i class="fa-solid fa-sparkles text-[10px]"></i>
             </div>
             <div class="bg-white border border-slate-200/70 rounded-2xl rounded-tl-xs p-3 text-slate-800 shadow-xs max-w-[85%] leading-relaxed text-xs whitespace-pre-line">
-                ${escapeHtml(text)}
+                ${formatBotMessage(text)}
             </div>
         `;
         container.appendChild(div);
@@ -443,6 +443,13 @@ window.SmartTechAI = (function() {
         if (container) container.scrollTop = container.scrollHeight;
     }
 
+    function formatBotMessage(str) {
+        return escapeHtml(str)
+            .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-slate-900">$1</strong>')
+            .replace(/(^|\n)\*\s+/g, '$1• ')
+            .replace(/\*([^*\n]+)\*/g, '<span class="font-medium text-slate-800">$1</span>');
+    }
+
     function escapeHtml(str) {
         return (str || '').replace(/[&<>"']/g, function(m) {
             return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
@@ -465,5 +472,5 @@ window.SmartTechAI = (function() {
         setProductContext
     };
 })();
-window.DndAI = window.SmartTechAI;
+window.SmartTechAI = window.DndAI;
 </script>

@@ -575,7 +575,7 @@
                 <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Một chút cảm hứng công nghệ.</h2>
                 <p class="text-xs text-slate-400">Gợi ý hữu ích để bạn chọn đúng và dùng thích hơn.</p>
             </div>
-            <a href="{{ route('shop.index') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1 group">
+            <a href="{{ route('tech-corner.index') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1 group">
                 <span>Khám phá góc công nghệ</span>
                 <span class="text-xs group-hover:translate-x-0.5 transition-transform">&nearr;</span>
             </a>
@@ -583,7 +583,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Article 1: Gọn một góc bàn -->
-            <a href="{{ route('shop.index') }}" class="tilt-card rounded-2xl bg-white border border-slate-200/80 overflow-hidden shadow-2xs hover:shadow-md transition-all group block" data-tilt>
+            <a href="{{ route('tech-corner.show', 'goc-lam-viec-toi-gian') }}" class="tilt-card rounded-2xl bg-white border border-slate-200/80 overflow-hidden shadow-2xs hover:shadow-md transition-all group block" data-tilt>
                 <div class="h-48 bg-[#F8FAFC] overflow-hidden relative">
                     <img 
                         src="{{ asset('images/blog-workspace.jpg') }}" 
@@ -607,7 +607,7 @@
             </a>
 
             <!-- Article 2: Chọn máy tính đầu tiên -->
-            <a href="{{ route('shop.index', ['category' => 'laptop']) }}" class="tilt-card rounded-2xl bg-white border border-slate-200/80 overflow-hidden shadow-2xs hover:shadow-md transition-all group block" data-tilt>
+            <a href="{{ route('tech-corner.show', 'chon-may-tinh-dau-tien') }}" class="tilt-card rounded-2xl bg-white border border-slate-200/80 overflow-hidden shadow-2xs hover:shadow-md transition-all group block" data-tilt>
                 <div class="h-48 bg-[#F8FAFC] overflow-hidden relative">
                     <img 
                         src="{{ asset('images/blog-first-laptop.jpg') }}" 
@@ -631,7 +631,7 @@
             </a>
 
             <!-- Article 3: Pin bền hơn -->
-            <a href="{{ route('shop.index', ['battery' => 'high']) }}" class="tilt-card rounded-2xl bg-white border border-slate-200/80 overflow-hidden shadow-2xs hover:shadow-md transition-all group block" data-tilt>
+            <a href="{{ route('tech-corner.show', 'pin-ben-hon-moi-ngay') }}" class="tilt-card rounded-2xl bg-white border border-slate-200/80 overflow-hidden shadow-2xs hover:shadow-md transition-all group block" data-tilt>
                 <div class="h-48 bg-[#F8FAFC] overflow-hidden relative">
                     <img 
                         src="{{ asset('images/blog-battery-habits.jpg') }}" 

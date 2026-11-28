@@ -236,7 +236,7 @@
                     <a href="{{ route('shop.index', ['sort' => 'sale']) }}" class="hover:text-blue-600 font-semibold transition-colors flex items-center gap-1">
                         <span>Ưu đãi hôm nay</span>
                     </a>
-                    <a href="{{ route('home') }}#goc-cong-nghe" class="hover:text-blue-600 font-semibold transition-colors flex items-center gap-0.5 text-slate-500">
+                    <a href="{{ route('tech-corner.index') }}" class="hover:text-blue-600 font-semibold transition-colors flex items-center gap-0.5 {{ request()->routeIs('tech-corner.*') ? 'text-blue-600 font-bold' : 'text-slate-500' }}">
                         <span>Góc công nghệ</span>
                         <span class="text-[10px]">↗</span>
                     </a>
@@ -280,7 +280,7 @@
                     <h4 class="text-slate-900 text-xs font-bold tracking-wider mb-4">Khám phá D&D</h4>
                     <ul class="space-y-2.5 text-xs text-slate-500">
                         <li><a href="{{ route('shop.index') }}" class="hover:text-blue-600 transition-colors">Về chúng tôi</a></li>
-                        <li><a href="{{ route('home') }}#goc-cong-nghe" class="hover:text-blue-600 transition-colors">Góc công nghệ</a></li>
+                        <li><a href="{{ route('tech-corner.index') }}" class="hover:text-blue-600 transition-colors">Góc công nghệ</a></li>
                         <li><a href="{{ route('shop.index') }}" class="hover:text-blue-600 transition-colors">Hệ thống cửa hàng</a></li>
                         <li><a href="{{ route('shop.index') }}" class="hover:text-blue-600 transition-colors">Cơ hội nghề nghiệp</a></li>
                     </ul>

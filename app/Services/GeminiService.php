@@ -32,7 +32,7 @@ class GeminiService
         $specsText = $this->buildSpecsText($product);
 
         $prompt = <<<PROMPT
-Bạn là chuyên gia tư vấn công nghệ tại SmartTech Store. Hãy phân tích thông số kỹ thuật và tạo tóm tắt đánh giá cho sản phẩm sau:
+Bạn là chuyên gia tư vấn công nghệ tại cửa hàng thiết bị điện tử D&D.. Hãy phân tích thông số kỹ thuật và tạo tóm tắt đánh giá cho sản phẩm sau:
 
 Tên sản phẩm: {$product->name}
 Hãng: {$product->brand?->name}
@@ -88,7 +88,7 @@ PROMPT;
         ?int $userId = null,
         ?Product $product = null
     ): string {
-        $context = 'Bạn là SmartTech AI - Trợ lý ảo tư vấn công nghệ thông minh, nhiệt tình và am hiểu kỹ thuật của SmartTech Store.';
+        $context = 'Bạn là D&D AI - Trợ lý ảo tư vấn công nghệ thông minh, nhiệt tình và am hiểu kỹ thuật của cửa hàng thiết bị điện tử D&D. (tuyệt đối luôn tự xưng là D&D AI hoặc D&D., không dùng bất kỳ tên cửa hàng nào khác).';
 
         if ($product !== null) {
             $specsText = $this->buildSpecsText($product);
@@ -100,13 +100,18 @@ PROMPT;
             $context .= 'Quy định bảo hành: '.$product->warranty_months." tháng toàn quốc.\n";
             $context .= "Hãy trả lời đúng thực tế kỹ thuật của máy này, không bịa đặt thông số. Tư vấn chân thành, ngắn gọn, súc tích (dưới 4 câu nếu có thể).\n";
         } else {
-            $context .= "\nKhách hàng đang duyệt cửa hàng chung. Hãy tư vấn nhiệt tình các dòng Laptop, Điện thoại, Phụ kiện theo nhu cầu và ngân sách của họ.\n";
+            $context .= "\nKhách hàng đang duyệt cửa hàng D&D.. Hãy tư vấn nhiệt tình các dòng Laptop, Điện thoại, Máy tính bảng, Âm thanh và Phụ kiện theo nhu cầu và ngân sách của họ.\n";
+            $catalogHint = $this->buildStoreCatalogHint($userMessage);
+            if ($catalogHint !== '') {
+                $context .= "Một số sản phẩm hiện đang bán tại D&D. liên quan để bạn ưu tiên gợi ý (nếu chưa có mẫu đúng tầm giá khách hỏi, hãy nói rõ và gợi ý mẫu gần nhất trong danh sách):\n{$catalogHint}\n";
+            }
         }
 
+        $context .= "Định dạng câu trả lời gọn gàng bằng tiếng Việt thuần, dùng gạch đầu dòng '-' khi liệt kê, hạn chế dùng ký tự Markdown '**'.\n";
         $prompt = "{$context}\n\nKhách hỏi: \"{$userMessage}\"\n\nTrả lời khách hàng bằng tiếng Việt thân thiện, chuyên nghiệp:";
 
         $aiReply = $this->callGemini($prompt, false)
-            ?? 'Cảm ơn bạn đã quan tâm đến SmartTech Store! Hiện tại hệ thống tư vấn AI đang bận một chút, bạn có thể tham khảo bảng thông số kỹ thuật bên dưới hoặc để lại câu hỏi nhé!';
+            ?? 'Cảm ơn bạn đã quan tâm đến D&D.! Hiện tại hệ thống tư vấn D&D AI đang bận một chút, bạn có thể tham khảo bảng thông số kỹ thuật bên dưới hoặc để lại câu hỏi nhé!';
 
         // Lưu vào bảng ai_chat_logs
         try {
@@ -209,6 +214,50 @@ PROMPT;
         }
 
         return null;
+    }
+
+    protected function buildStoreCatalogHint(string $userMessage): string
+    {
+        try {
+            $keywords = collect(preg_split('/\s+/u', mb_strtolower(trim($userMessage))) ?: [])
+                ->filter(fn (string $word): bool => mb_strlen($word) >= 2 && ! in_array($word, ['tư', 'vấn', 'cho', 'tôi', 'mình', 'mua', 'giá', 'dưới', 'trên', 'từ', 'tới', 'triệu', 'ngàn', 'đồng', 'nào', 'tốt', 'nhất', 'với', 'cần', 'tìm'], true))
+                ->take(4)
+                ->values();
+
+            $query = Product::with(['brand', 'category'])->where('is_active', true);
+
+            if ($keywords->isNotEmpty()) {
+                $query->where(function ($q) use ($keywords): void {
+                    foreach ($keywords as $word) {
+                        $q->orWhere('name', 'like', "%{$word}%")
+                            ->orWhereHas('category', fn ($catQ) => $catQ->where('name', 'like', "%{$word}%"))
+                            ->orWhereHas('brand', fn ($brandQ) => $brandQ->where('name', 'like', "%{$word}%"));
+                    }
+                });
+            }
+
+            $products = $query->orderByRaw('COALESCE(NULLIF(sale_price, 0), base_price) ASC')
+                ->limit(6)
+                ->get();
+
+            if ($products->isEmpty()) {
+                $products = Product::with(['brand', 'category'])
+                    ->where('is_active', true)
+                    ->orderByDesc('total_sold')
+                    ->limit(5)
+                    ->get();
+            }
+
+            return $products->map(function (Product $item): string {
+                $price = number_format($item->current_price, 0, ',', '.').'đ';
+                $brand = $item->brand?->name ?? 'D&D.';
+                $cat = $item->category?->name ?? 'Thiết bị';
+
+                return "- {$item->name} ({$brand} · {$cat}): {$price}";
+            })->implode("\n");
+        } catch (\Throwable) {
+            return '';
+        }
     }
 
     protected function buildSpecsText(Product $product): string

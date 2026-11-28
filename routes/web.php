@@ -22,6 +22,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductComparisonController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\TechCornerController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,8 @@ Route::get('/san-pham', [ProductController::class, 'index'])->name('products.ind
 Route::get('/san-pham/{slug}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show.alias');
 Route::get('/compare', [ProductComparisonController::class, 'index'])->name('compare.index');
+Route::get('/goc-cong-nghe', [TechCornerController::class, 'index'])->name('tech-corner.index');
+Route::get('/goc-cong-nghe/{slug}', [TechCornerController::class, 'show'])->name('tech-corner.show');
 
 // =========================================================================
 // PHÂN HỆ GIỎ HÀNG, THANH TOÁN & ĐƠN HÀNG (THÀNH VIÊN 4)
